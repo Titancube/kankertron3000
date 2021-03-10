@@ -17,7 +17,7 @@ export abstract class Remember {
             await db.collection('Member').doc(msg.author.id).collection('Messages').doc(msg.id).set({
                 message: msg.content, // Actual message
                 createdAt: msg.createdAt, // When did the message created
-            }, { merge: true })
+            })
         } catch (e) {
             console.log(e)
         }
