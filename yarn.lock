@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-"@0x77/markov-typescript@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@0x77/markov-typescript/-/markov-typescript-1.2.1.tgz#73fcc9efe21931e250025f092c6858ddcbd0c07b"
-  integrity sha512-HbCuysSXOMlhwtEUlWR4vjwvSC4rzaArVW3iYnfMlfDJIUQZWUwOxsFMiKy2i0aXgluQoEi6WgT/4SkIibEaRw==
-  dependencies:
-    typescript-collections "^1.2.3"
-
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
@@ -1737,6 +1730,11 @@ js-git@^0.7.8:
     git-sha1 "^0.1.2"
     pako "^0.2.5"
 
+js-markov@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/js-markov/-/js-markov-3.0.3.tgz#77014443be2301493f8e0a9856f161369b0f4e4a"
+  integrity sha512-UgKhwGn5G2XgPr13VK73ExrMVsZCrr7XbH34mKAD96qwjMg+3w0wgUDeJg6g9YqMhabLElFm3Kr8P5Ej9KKFyg==
+
 js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -2805,11 +2803,6 @@ typedarray-to-buffer@^3.1.5:
   integrity sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
   dependencies:
     is-typedarray "^1.0.0"
-
-typescript-collections@^1.2.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/typescript-collections/-/typescript-collections-1.3.3.tgz#62d50d93c018c094d425eabee649f00ec5cc0fea"
-  integrity sha512-7sI4e/bZijOzyURng88oOFZCISQPTHozfE2sUu5AviFYk5QV7fYGb6YiDl+vKjF/pICA354JImBImL9XJWUvdQ==
 
 typescript@^4.2.3:
   version "4.2.3"
