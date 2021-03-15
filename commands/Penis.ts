@@ -29,7 +29,7 @@ export abstract class Penis {
             return n + n * penisConstructor(fate())
         }
 
-        if (r) {
+        if (r.exists()) {
             if (r.data().penis !== undefined) {
                 command.channel.send(r.data().penis)
             } else {
