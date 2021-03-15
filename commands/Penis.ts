@@ -30,7 +30,7 @@ export abstract class Penis {
         }
 
         if (r) {
-            if (r.data().penis) {
+            if (r.data().penis !== undefined) {
                 command.channel.send(r.data().penis)
             } else {
                 const penis = testicles + stick.repeat(penisConstructor(fate()) / 10) + glans
