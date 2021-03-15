@@ -38,7 +38,9 @@ export abstract class Penis {
                 command.channel.send(penis)
             }
         } else {
-            command.channel.send('err')
+          const penis = testicles + stick.repeat(penisConstructor(fate()) / 10) + glans
+          await snapshot.set({ penis: penis }, { merge: true })
+          command.channel.send(penis)
         }
 
     }
