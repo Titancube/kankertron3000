@@ -29,18 +29,20 @@ export abstract class Penis {
             return n + n * penisConstructor(fate())
         }
 
+        const godHasSpoken = async () => {
+            const penis = testicles + stick.repeat(penisConstructor(fate()) / 10) + glans
+            await snapshot.set({ penis: penis }, { merge: true })
+            command.channel.send(penis)
+        }
+
         if (r.exists) {
             if (r.data().penis !== undefined) {
                 command.channel.send(r.data().penis)
             } else {
-                const penis = testicles + stick.repeat(penisConstructor(fate()) / 10) + glans
-                await snapshot.set({ penis: penis }, { merge: true })
-                command.channel.send(penis)
+                godHasSpoken()
             }
         } else {
-          const penis = testicles + stick.repeat(penisConstructor(fate()) / 10) + glans
-          await snapshot.set({ penis: penis }, { merge: true })
-          command.channel.send(penis)
+            godHasSpoken()
         }
 
     }
