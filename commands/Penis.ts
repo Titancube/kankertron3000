@@ -25,10 +25,11 @@ export abstract class Penis {
 
         const penisConstructor = (n: number): number => {
 
-            if (n < 95 || n + 1 > 500) {
+            if (n < 85 || n + 1 > 500) {
+                command.channel.send(`The god has rolled the dice!`)
                 return n
             }
-            console.log(`[${new Date()}]: The god has rolled the dice and given ${command.author.username} ${n}!`)
+            command.channel.send(`The god has has rolled the Jackpot and rolling the dice again!`)
             return n + penisConstructor(fate())
         }
 
