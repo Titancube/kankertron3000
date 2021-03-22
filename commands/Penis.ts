@@ -28,7 +28,7 @@ export abstract class Penis {
             if (n < 95 || n + 1 > 500) {
                 return n
             }
-
+            console.log(`[${new Date()}]: The god has rolled the dice and given ${command.author.username} ${n}!`)
             return n + penisConstructor(fate())
         }
 
