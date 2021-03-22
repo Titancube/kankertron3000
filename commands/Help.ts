@@ -1,25 +1,37 @@
-import { Command, CommandMessage } from '@typeit/discord'
-import * as CommandList from '../imports/index'
+import { Client, Command, CommandMessage, Description, Infos } from '@typeit/discord'
 
 export abstract class Help {
 
-    description: `\`$help\``
-    detail: `\`$help <command?>\`
-    
-    Exmaple: \`$help say\`
-    Get general info about all commands or detailed guide about the targeted command
-    `
-
     @Command("help :mTarget")
+    @Infos({
+        command: `help`,
+        detail: `\`$help <Command>\`
+    
+* Get general info about all or specific command
+        `
+    })
+    @Description("Get general info about all commands")
     private async help(command: CommandMessage): Promise<void> {
-
         const { mTarget } = command.args
-        console.log(CommandList)
-
-        if (mTarget) {
-            command.channel.send('[help] Mesage with targeted function')
+        const details = Client.getCommands();
+        const title = '**Commands List**\n\nType `$help <command>` to see description'
+        let str = ''
+        const opener = '```\n'
+        const closer = '\n```'
+        if (!mTarget) {
+            details.forEach(v => {
+                str = str + v.infos.command + '\n'
+            })
+            command.channel.send(title + opener + str + closer)
         } else {
-            command.channel.send('[help] Message without targeted function')
+            const result = details.filter(v => v.infos.command === mTarget.toString())
+            if (result.length > 0) {
+                str = result[0].infos.detail
+                command.channel.send(str)
+            } else {
+                command.channel.send('The command does not exist')
+            }
         }
+
     }
 }

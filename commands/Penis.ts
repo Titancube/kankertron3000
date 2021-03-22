@@ -1,15 +1,18 @@
-import { Command, CommandMessage } from '@typeit/discord'
+import { Command, CommandMessage, Infos } from '@typeit/discord'
 import db from '../plugins/firebase'
 
 export abstract class Penis {
 
-    description: `\`$penis\``
-    detail: `\`$penis\`
-    
-    You get what you get
-    `
+
 
     @Command("penis")
+    @Infos({
+        command: `penis`,
+        detail: `\`$penis\`
+        
+* You get what you get
+        `
+    })
     private async penis(command: CommandMessage): Promise<void> {
         const testicles = '3'
         const glans = 'D'
