@@ -29,7 +29,7 @@ export abstract class Penis {
                 return n
             }
 
-            return n + n * penisConstructor(fate())
+            return n + penisConstructor(fate())
         }
 
         const godHasSpoken = async () => {
