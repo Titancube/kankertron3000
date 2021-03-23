@@ -11,7 +11,7 @@ export abstract class Remember {
     )
     async remember([msg]: ArgsOf<"message">): Promise<void> {
         // Cancel saving if the message is a command, empty or is in admin channel
-        if (msg.content.startsWith("$") || msg.channel.id === '474258213655805972' || msg.content === '') { return }
+        if (msg.content.startsWith("$") || msg.channel.id === '474258213655805972' || msg.content === '' || msg.content.startsWith('http')) { return }
 
         // Save in DB 
         try {
