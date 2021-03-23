@@ -10,8 +10,9 @@ export abstract class Remember {
         IsRefugee
     )
     async remember([msg]: ArgsOf<"message">): Promise<void> {
-        // Cancel saving if the message is a command
-        if (msg.content.startsWith("$") || msg.channel.id === '474258213655805972') { return }
+        // Cancel saving if the message is a command, empty or is in admin channel
+        if (msg.content.startsWith("$") || msg.channel.id === '474258213655805972' || msg.content === '') { return }
+
         // Save in DB 
         try {
             await db.collection('Member').doc(msg.author.id).collection('Messages').doc(msg.id).set({
