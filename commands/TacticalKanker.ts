@@ -3,14 +3,14 @@ import * as path from "path";
 import { isAdmin } from "../guards/isAdmin";
 
 export abstract class TacticalKanker {
-  @Command("kanker")
+  @Command("tactkank")
   @Guard(isAdmin)
   @Infos({
-    command: `tackank`,
-    detail: "`$tackank`",
+    command: `tactkank`,
+    detail: "`$tactkank`",
     description: "* Kanker but instant, Admin only",
   })
-  private async tackank(command: CommandMessage): Promise<void> {
+  private async tactkank(command: CommandMessage): Promise<void> {
     const vc = command.member.voice.channel;
 
     if (vc) {
