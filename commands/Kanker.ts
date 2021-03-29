@@ -28,7 +28,9 @@ export abstract class Kanker {
           console.log(e);
         });
     } else {
-      command.channel.send("보이스 채널에 입장해주세요");
+      command.channel.send(
+        "Join voice channel to execute this horrifying function"
+      );
     }
   }
 }
