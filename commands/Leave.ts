@@ -11,6 +11,8 @@ export abstract class Leave {
     const vc = command.member.voice.channel;
     if (vc) {
       command.guild.me.voice.channel.leave();
+    } else {
+      return;
     }
   }
 }
