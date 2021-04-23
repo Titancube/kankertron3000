@@ -17,22 +17,28 @@ export abstract class Say {
       const res = await axios.get(
         'https://api.mcsrvstat.us/2/blockgame.invertedsilence.com'
       );
-      const activeUsers: Promise<Array<string>> = await res.data.players.list;
-      const activeUsersCount = (await activeUsers).length;
-      let str = '';
-      let activePlayers = '';
-
-      (await activeUsers).forEach((n: string) => {
-        activePlayers += `+ ${n}\n`;
-      });
-
-      str +=
+      let str =
         '**LoudnessRefugee Minecraft Server**\n' +
-        'Host address: `blockgame.invertedsilence.com`\n\n```diff\nCurrent Players\n\n' +
-        activeUsersCount +
-        ' Playing\n\n' +
-        activePlayers +
-        '```';
+        'Host address: `blockgame.invertedsilence.com`';
+
+      if (await res.data.online) {
+        const activeUsers: Promise<Array<string>> = await res.data.players.list;
+        const activeUsersCount = (await activeUsers).length;
+        let activePlayers = '';
+
+        (await activeUsers).forEach((n: string) => {
+          activePlayers += `+ ${n}\n`;
+        });
+
+        str +=
+          '\n\n```diff\nCurrent Players\n\n' +
+          activeUsersCount +
+          ' Playing\n\n' +
+          activePlayers +
+          '```';
+      } else {
+        str += '```diff\n- Server Offline\n```';
+      }
       command.channel.send(str);
     } catch (error) {
       console.log(`[${new Date()}] ERROR`);
