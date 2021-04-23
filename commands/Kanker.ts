@@ -82,6 +82,7 @@ export abstract class Kanker {
     }
   }
 
+  // admin only: instant kanker
   @Command('tactkank')
   @Guard(isAdmin)
   @Infos({
@@ -93,6 +94,7 @@ export abstract class Kanker {
     Kanker.voiceEmitter(command, 'kanker.wav', 0.65);
   }
 
+  // leaves voice channel
   @Command('leave')
   @Infos({
     command: `leave`,
@@ -100,11 +102,6 @@ export abstract class Kanker {
     description: '* leaves voice channel',
   })
   private async leave(command: CommandMessage): Promise<void> {
-    const vc = () => (command.member.voice.channel ? true : false);
-    if (vc) {
-      command.member.voice.channel.leave();
-    } else {
-      return;
-    }
+    command.member.voice.channel ? command.member.voice.channel.leave() : false;
   }
 }
