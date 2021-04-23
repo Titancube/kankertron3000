@@ -18,7 +18,7 @@ export abstract class Say {
         'https://api.mcsrvstat.us/2/blockgame.invertedsilence.com'
       );
       let str =
-        '**LoudnessRefugee Minecraft Server**\n' +
+        '**Loudness Refuge Minecraft Server**\n' +
         'Host address: `blockgame.invertedsilence.com`';
 
       if (await res.data.online) {
