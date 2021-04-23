@@ -1,8 +1,54 @@
 import { Command, CommandMessage, Infos } from "@typeit/discord";
 import db from "../plugins/firebase";
 import Markov from "js-markov";
+import * as axiosTemp from "axios";
+const axios = axiosTemp.default;
 
 export abstract class Say {
+  @Command("mc")
+  @Infos({
+    command: `mc`,
+    detail: "`$mc`",
+    description: "* Get the details about Loudness Refugee Minecraft server",
+  })
+  async getMcStatus(command: CommandMessage): Promise<void> {
+    try {
+      const res = await axios.get(
+        "https://api.mcsrvstat.us/2/blockgame.invertedsilence.com"
+      );
+      const activeUsers: Promise<Array<string>> = await res.data.players.list;
+      const activeUsersCount = (await activeUsers).length;
+      let str = "";
+      let activePlayers = "";
+
+      (await activeUsers).forEach((n: string) => {
+        activePlayers += `+ ${n}\n`;
+      });
+
+      str +=
+        "**LoudnessRefugee Minecraft Server**\n" +
+        "Host address: `blockgame.invertedsilence.com`\n\n```diff\nCurrent Players\n\n" +
+        activeUsersCount +
+        " Playing\n\n" +
+        activePlayers +
+        "```";
+      command.channel.send(str);
+    } catch (error) {
+      console.log(`[${new Date()}] ERROR`);
+      console.log(error);
+    }
+  }
+
+  @Command("saus")
+  @Infos({
+    command: `saus`,
+    detail: "`$saus`",
+    description: "* Gratis Saus",
+  })
+  async saus(command: CommandMessage): Promise<void> {
+    command.channel.send("gratis saus");
+  }
+
   @Command("donate")
   @Infos({
     command: `donate`,
