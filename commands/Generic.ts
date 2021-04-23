@@ -15,19 +15,20 @@ export abstract class Say {
   async getMcStatus(command: CommandMessage): Promise<void> {
     try {
       const res = await axios.get(
-        'https://api.mcsrvstat.us/2/blockgame.invertedsilence.com'
+        'https://mcapi.us/server/status?ip=blockgame.invertedsilence.com'
       );
       let str =
         '**Loudness Refuge Minecraft Server**\n' +
-        'Host address: `blockgame.invertedsilence.com`';
+        '`blockgame.invertedsilence.com`';
 
       if (await res.data.online) {
-        const activeUsers: Promise<Array<string>> = await res.data.players.list;
-        const activeUsersCount = (await activeUsers).length;
+        const activeUsers: Promise<Array<Record<string, unknown>>> = await res
+          .data.players.sample;
+        const activeUsersCount: Promise<number> = await res.data.players.now;
         let activePlayers = '';
 
-        (await activeUsers).forEach((n: string) => {
-          activePlayers += `+ ${n}\n`;
+        (await activeUsers).forEach((n) => {
+          activePlayers += `+ ${n.name}\n`;
         });
 
         str +=
@@ -39,6 +40,9 @@ export abstract class Say {
       } else {
         str += '```diff\n- Server Offline\n```';
       }
+      command.channel.send(
+        'http://mcapi.us/server/image?ip=blockgame.invertedsilence.com&theme=dark&title=LoudnessRefuge'
+      );
       command.channel.send(str);
     } catch (error) {
       console.log(`[${new Date()}] ERROR`);
