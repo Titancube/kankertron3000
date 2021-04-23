@@ -1,6 +1,6 @@
-import { Command, CommandMessage, Guard, Infos } from "@typeit/discord";
-import * as path from "path";
-import { isAdmin } from "../guards/isAdmin";
+import { Command, CommandMessage, Guard, Infos } from '@typeit/discord';
+import * as path from 'path';
+import { isAdmin } from '../guards/isAdmin';
 
 export abstract class Kanker {
   private static async voiceEmitter(
@@ -18,11 +18,11 @@ export abstract class Kanker {
       dispatcher.setVolume(volume);
 
       dispatcher
-        .on("finish", () => {
+        .on('finish', () => {
           dispatcher.destroy();
           command.guild.me.voice.channel.leave();
         })
-        .on("error", (e) => {
+        .on('error', (e) => {
           console.log(`
           ${e.name}
 
@@ -32,15 +32,15 @@ export abstract class Kanker {
           `);
         });
     } else {
-      command.channel.send("Join voice channel to execute the function");
+      command.channel.send('Join voice channel to execute the function');
     }
   }
 
-  @Command("kanker")
+  @Command('kanker')
   @Infos({
-    command: `kanker`,
-    detail: "`$kanker`",
-    description: "* kanker",
+    command: 'kanker',
+    detail: '`$kanker`',
+    description: '* kanker',
   })
   private async kanker(command: CommandMessage): Promise<void> {
     const vc = command.member.voice.channel;
@@ -62,42 +62,42 @@ export abstract class Kanker {
       const r = await vc.join();
       const play = async () => {
         const dispatcher = r.play(
-          path.join(__dirname, "../assets/audio/kanker.wav")
+          path.join(__dirname, '../assets/audio/kanker.wav')
         );
         dispatcher.setVolume(0.65);
         dispatcher
-          .on("finish", () => {
+          .on('finish', () => {
             dispatcher.destroy();
             command.member.voice.channel.leave();
           })
-          .on("error", (e) => {
+          .on('error', (e) => {
             console.log(e);
           });
       };
       setTimeout(play, theTime);
     } else {
       command.channel.send(
-        "Join voice channel to execute this horrifying function"
+        'Join voice channel to execute this horrifying function'
       );
     }
   }
 
-  @Command("tactkank")
+  @Command('tactkank')
   @Guard(isAdmin)
   @Infos({
-    command: `tactkank`,
-    detail: "`$tactkank`",
-    description: "* Kanker but instant, Admin only",
+    command: 'tactkank',
+    detail: '`$tactkank`',
+    description: '* Kanker but instant, Admin only',
   })
   private async tactkank(command: CommandMessage): Promise<void> {
-    Kanker.voiceEmitter(command, "kanker.wav", 0.65);
+    Kanker.voiceEmitter(command, 'kanker.wav', 0.65);
   }
 
-  @Command("leave")
+  @Command('leave')
   @Infos({
     command: `leave`,
-    detail: "`$leave`",
-    description: "* leaves voice channel",
+    detail: '`$leave`',
+    description: '* leaves voice channel',
   })
   private async leave(command: CommandMessage): Promise<void> {
     const vc = () => (command.member.voice.channel ? true : false);
