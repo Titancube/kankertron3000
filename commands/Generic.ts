@@ -98,7 +98,7 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
       .doc(person)
       .collection('Messages')
       .orderBy('createdAt', 'desc')
-      .limit(1000)
+      .limit(150)
       .get();
 
     if (!getHistory.empty) {
