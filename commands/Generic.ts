@@ -111,9 +111,11 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
         count
       );
 
+      Markov.init();
       Markov.addState(messagesToLearn);
       Markov.train();
       command.channel.send(Markov.generate(count));
+      Markov.init();
     } else {
       command.channel.send('Invalid user');
     }
@@ -126,7 +128,9 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
    */
   private userStringParser(user: string) {
     const validate = new RegExp(/([0-9])+/g);
-    return user ? validate.exec(user)[0] : '';
+    return user && validate.exec(user)[0].length == 18
+      ? validate.exec(user)[0]
+      : '';
   }
 
   /**
