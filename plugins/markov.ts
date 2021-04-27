@@ -1,7 +1,7 @@
 // https://medium.com/@alexkrameris/markov-chain-implementation-in-javascript-a698f371d66f
 // My own implementation in typescript of Alex Kramer's original javascript version
 
-export class Markov {
+export abstract class Markov {
   private static state: string[] = [];
   private static markovChain = {};
 
@@ -17,6 +17,10 @@ export class Markov {
 
   private static trim(text: string): string {
     return text.toLowerCase().replace(/[\W_]/, '');
+  }
+
+  static init(): void {
+    Markov.markovChain = {};
   }
 
   static train(): void {
