@@ -85,7 +85,7 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
   })
   private async say(command: CommandMessage): Promise<void> {
     const { tempPerson, tempCount } = command.args;
-    const person: string = this.userStringParser(tempPerson)
+    const person: string = this.validateUser(tempPerson)
       ? this.userStringParser(tempPerson)
       : this.userStringParser(command.author.id);
     const count: number = this.checkNumber(tempCount)
@@ -128,16 +128,17 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
    */
   private userStringParser(user: string) {
     const validate = new RegExp(/([0-9])+/g);
-    return user && validate.exec(user)[0].toString().length == 18
-      ? validate.exec(user)[0]
-      : '';
+    return validate.exec(user)[0];
   }
 
+  /**
+   * Check if `user` is valid id
+   * @param user
+   * @returns `boolean`
+   */
   private validateUser(user: string): boolean {
     const validate = new RegExp(/([0-9])+/g);
-    return validate.exec(user)[0] && validate.exec(user)[0].length
-      ? true
-      : false;
+    return user && validate.exec(user)[0] ? true : false;
   }
 
   /**
