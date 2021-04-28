@@ -19,7 +19,7 @@ export abstract class Help {
     const details = Client.getCommands();
     const title =
       '**Commands List**\n\nType `$help <command>` to see description';
-    let str = '';
+    let str = '\n\n';
     if (!mTarget) {
       details.forEach((v) => {
         str += v.infos.command + ' - ' + v.infos.detail + '\n';
