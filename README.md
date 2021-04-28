@@ -1,4 +1,6 @@
 # Kankertron3000
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FTitancube%2Fkankertron3000.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FTitancube%2Fkankertron3000?ref=badge_shield)
+
 
 Gratis saus
 
@@ -34,6 +36,5 @@ make `.env` file on root and add it with your bot token
 CLIENT_TOKEN=<YOUR_BOT_TOKEN>
 ```
 
-### License
-
+## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FTitancube%2Fkankertron3000.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FTitancube%2Fkankertron3000?ref=badge_large)
