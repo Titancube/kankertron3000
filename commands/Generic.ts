@@ -19,7 +19,7 @@ export abstract class Say {
       );
       let str =
         '**Loudness Refuge Minecraft Server**\n' +
-        '`blockgame.invertedsilence.com`';
+        '`blockgame.invertedsilence.com:25668`';
 
       if (await res.data.online) {
         const activeUsers: Promise<Array<Record<string, unknown>>> = await res
