@@ -20,13 +20,11 @@ export abstract class Help {
     const title =
       '**Commands List**\n\nType `$help <command>` to see description';
     let str = '';
-    const opener = '```\n';
-    const closer = '\n```';
     if (!mTarget) {
       details.forEach((v) => {
         str += v.infos.command + ' - ' + v.infos.detail + '\n';
       });
-      command.channel.send(title + opener + str + closer);
+      command.channel.send(title + str);
     } else {
       const result = details.filter(
         (v) => v.infos.command === mTarget.toString()
