@@ -111,6 +111,13 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
         count
       );
 
+      if (messagesToLearn.length < 5) {
+        command.channel.send(
+          'Need more message histories to generate the message'
+        );
+        return;
+      }
+
       const markov = new Markov();
 
       markov.addState(messagesToLearn);
