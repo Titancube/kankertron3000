@@ -15,11 +15,11 @@ export abstract class Say {
   async getMcStatus(command: CommandMessage): Promise<void> {
     try {
       const res = await axios.get(
-        'https://mcapi.us/server/status?ip=blockgame.invertedsilence.com&port=25668'
+        'https://mcapi.us/server/status?ip=blockgame.invertedsilence.com'
       );
       let str =
         '**Loudness Refuge Minecraft Server**\n' +
-        '`blockgame.invertedsilence.com:25668`';
+        '`blockgame.invertedsilence.com`';
 
       if (await res.data.online) {
         const activeUsers: Promise<Array<Record<string, unknown>>> = await res
