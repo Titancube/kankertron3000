@@ -24,7 +24,7 @@ export abstract class Help {
     const closer = '\n```';
     if (!mTarget) {
       details.forEach((v) => {
-        str += v.infos.command + '\n';
+        str += v.infos.command + ' - ' + v.infos.detail + '\n';
       });
       command.channel.send(title + opener + str + closer);
     } else {
