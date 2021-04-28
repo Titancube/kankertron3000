@@ -1,6 +1,6 @@
 import { Command, CommandMessage, Infos } from '@typeit/discord';
 import db from '../plugins/firebase';
-import Markov from 'js-markov';
+import { Markov } from '../plugins/markov';
 import * as axiosTemp from 'axios';
 const axios = axiosTemp.default;
 
@@ -41,7 +41,9 @@ export abstract class Say {
         str += '```diff\n- Server Offline\n```';
       }
       command.channel.send(
-        'http://mcapi.us/server/image?ip=blockgame.invertedsilence.com&theme=dark&title=LoudnessRefuge'
+        'http://mcapi.us/server/image?ip=blockgame.invertedsilence.com&theme=dark&title=LoudnessRefuge' +
+          '&time=' +
+          new Date().getTime()
       );
       command.channel.send(str);
     } catch (error) {
@@ -74,64 +76,94 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
   }
 
   // imitates target person
-  @Command('say :mPerson :mHistory :mCount')
+  @Command('say :tempPerson :tempCount')
   @Infos({
     command: `say`,
-    detail: `\`$say <Mention> <History?: default 50> <Count?: default 15>\``,
+    detail: `\`$say <@Mention> <Count?>\``,
     description:
-      "* Speaks randomly generated sentence depends on the mentioned person's chat history\n* Message will be generated with the amount of maximum words specified with `<Count>` based on number of histories specifed with `<History>`\n* If the person mentioned usually says short words, the result is also likely to be short\n* `<Count>` **limits** the maximum words, not forcing it",
+      "* Speaks randomly generated sentence depends on the mentioned person's chat history\n* You can optionally make how much long the message will be with <Count>\n* Note that the length of the message would not exactly match if the maximum length of the message that targeted person has sent before is shorter than the count",
   })
   private async say(command: CommandMessage): Promise<void> {
-    const { mPerson, mHistory, mCount } = command.args;
-    const history = mHistory ? Math.floor(mHistory) : 50;
-    const person = this.userStringParser(mPerson);
-    const count = mCount ? Math.floor(mCount) : 15;
-    console.log(
-      `[${new Date()}] User: ${person} | History: ${history} | Count: ${count}`
-    );
+    const { tempPerson, tempCount } = command.args;
+    const person: string = this.validateUser(tempPerson)
+      ? this.userStringParser(tempPerson)
+      : this.userStringParser(command.author.id);
+    const count: number = this.checkNumber(tempCount)
+      ? parseInt(tempCount + '')
+      : 5;
 
-    if (history > 1000 || history < 0) {
-      command.channel.send(
-        'Count of message history cannot be higher than 1000 or lower than 0'
-      );
-      return;
-    }
-
-    if (person === '') {
-      command.channel.send('Invalid user');
-    }
-
-    const wordsToTrain = [];
-    const markov = new Markov();
-    const samples = await db
+    const tempMessageHolder = [];
+    const getHistory = await db
       .collection('Member')
       .doc(person)
       .collection('Messages')
       .orderBy('createdAt', 'desc')
-      .limit(history)
+      .limit(150)
       .get();
 
-    if (samples) {
-      samples.forEach((r) => {
-        wordsToTrain.push(r.data().message);
+    if (!getHistory.empty) {
+      getHistory.forEach((r) => {
+        tempMessageHolder.push(r.data().message);
       });
 
-      markov.addStates(wordsToTrain);
+      const messagesToLearn: Array<string> = this.wordsFilter(
+        tempMessageHolder,
+        count
+      );
+
+      const markov = new Markov();
+
+      markov.addState(messagesToLearn);
       markov.train();
-      const theWiseWord: string = markov.generateRandom(count);
-      theWiseWord.length
-        ? command.channel.send(theWiseWord)
-        : command.channel.send('No message was generated, try again!');
+      command.channel.send(markov.generate(count));
+    } else {
+      command.channel.send('Invalid user');
     }
   }
 
+  /**
+   * Trims discord mention's head & tail i.e `<!@...>`
+   * @param user discord mention
+   * @returns parsed by regex
+   */
   private userStringParser(user: string) {
     const validate = new RegExp(/([0-9])+/g);
+    return validate.exec(user)[0];
+  }
 
-    if (!user) {
-      return '';
-    } else {
-      return validate.exec(user)[0];
+  /**
+   * Check if `user` is valid id
+   * @param user
+   * @returns `boolean`
+   */
+  private validateUser(user: string): boolean {
+    const validate = new RegExp(/([0-9])+/g);
+    return user && validate.exec(user)[0] ? true : false;
+  }
+
+  /**
+   * Filters valid sentences to train markov chain
+   * @param arr unfiltered message history
+   * @param count minimum length of the array of message history split by whitespace
+   * @returns array of filtered
+   */
+  private wordsFilter(arr: Array<string>, count: number) {
+    for (let i = count; i > 0; i--) {
+      const newArr: Array<string> = arr.filter((s) => s.split(' ').length >= i);
+      if (newArr.length >= 5) return newArr;
+    }
+  }
+
+  /**
+   * Check if the property can be parsed into number and returns it
+   * @param num unknown
+   * @returns Parsed number if the `num` could be parsed
+   */
+  private checkNumber(num: unknown): boolean {
+    try {
+      return typeof num == 'number' ? true : false;
+    } catch (e) {
+      console.error(`[${new Date()}] ${e}`);
     }
   }
 }
