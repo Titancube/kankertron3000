@@ -3,6 +3,7 @@ import db from '../plugins/firebase';
 import { Markov } from '../plugins/markov';
 import * as axiosTemp from 'axios';
 import { Validate } from '../plugins/tools';
+import { randomInt } from 'crypto';
 const axios = axiosTemp.default;
 
 export abstract class Say {
@@ -127,5 +128,66 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
     } else {
       command.channel.send('Invalid user');
     }
+  }
+
+  @Command('sex :tempA :tempB')
+  @Infos({
+    command: 'sex',
+    detail: '$sex <@Mention 1> <@Mention 2>',
+    description:
+      '* Make them have sex, and produce a baby\n* With a little chatters',
+  })
+  private async sex(command: CommandMessage) {
+    const { tempA, tempB } = command.args;
+    const A = Validate.userValidateAndParse(tempA);
+    const B = Validate.userValidateAndParse(tempB);
+    const markovA = new Markov();
+    const markovB = new Markov();
+
+    try {
+      const dataA = await db
+        .collection('Member')
+        .doc(A)
+        .collection('Messages')
+        .orderBy('createdAt', 'desc')
+        .limit(150)
+        .get();
+      const dataB = await db
+        .collection('Member')
+        .doc(B)
+        .collection('Messages')
+        .orderBy('createdAt', 'desc')
+        .limit(150)
+        .get();
+      const tempMessageHolderA = [];
+      const tempMessageHolderB = [];
+
+      if (!dataA.empty && !dataB.empty) {
+        dataA.forEach((r) => {
+          tempMessageHolderA.push(r.data().message);
+        });
+        dataB.forEach((r) => {
+          tempMessageHolderB.push(r.data().message);
+        });
+      }
+
+      // command.guild.members.cache.get(A).nickname
+
+      if (A && B) {
+        //
+      } else {
+        command.channel.send('You need a pair to produce a baby 😞');
+      }
+    } catch (error) {
+      console.error(`[${new Date()}] ${error}`);
+    }
+  }
+
+  static async generateRandomConversation(
+    max: number,
+    A: Record<string, string>
+  ): Promise<string> {
+    // let str = ''
+    // return str
   }
 }
