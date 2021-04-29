@@ -21,6 +21,15 @@ export class Validate {
   }
 
   /**
+   * Check user and return the parsed data
+   * @param id Discord user id
+   * @returns Parsed user id or ''
+   */
+  static userValidateAndParse(id: string): string {
+    return this.user(id) ? this.userStringParser(id) : '';
+  }
+
+  /**
    * Check if the property can be parsed into number and returns it
    * @param num unknown
    * @returns Parsed number if the `num` could be parsed
