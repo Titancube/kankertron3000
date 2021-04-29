@@ -12,7 +12,6 @@ export abstract class Penis {
     const testicles = '3';
     const glans = 'D';
     const stick = '=';
-
     const snapshot = db.collection('Member').doc(command.author.id);
     const r = await snapshot.get();
 
@@ -38,14 +37,8 @@ export abstract class Penis {
       command.channel.send(penis);
     };
 
-    if (r.exists) {
-      if (r.data().penis !== undefined) {
-        command.channel.send(r.data().penis);
-      } else {
-        godHasSpoken();
-      }
-    } else {
-      godHasSpoken();
-    }
+    r.exists && r.data().penis !== undefined
+      ? command.channel.send(r.data().penis)
+      : godHasSpoken();
   }
 }
