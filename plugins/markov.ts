@@ -54,4 +54,17 @@ export class Markov {
     }
     return result;
   }
+
+  /**
+   * Filters valid sentences to train markov chain
+   * @param arr unfiltered message history
+   * @param count minimum length of the array of message history split by whitespace
+   * @returns array of filtered
+   */
+  static wordsFilter(arr: Array<string>, count: number): Array<string> {
+    for (let i = count; i > 0; i--) {
+      const newArr: Array<string> = arr.filter((s) => s.split(' ').length >= i);
+      if (newArr.length >= 5) return newArr;
+    }
+  }
 }

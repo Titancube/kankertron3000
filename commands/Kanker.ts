@@ -1,6 +1,6 @@
 import { Command, CommandMessage, Guard, Infos } from '@typeit/discord';
 import * as path from 'path';
-import { isAdmin } from '../guards/isAdmin';
+import { IsAdmin } from '../guards/IsAdmin';
 
 export abstract class Kanker {
   private static async voiceEmitter(
@@ -84,7 +84,7 @@ export abstract class Kanker {
 
   // admin only: instant kanker
   @Command('tactkank')
-  @Guard(isAdmin)
+  @Guard(IsAdmin)
   @Infos({
     command: 'tactkank',
     detail: '`$tactkank`',

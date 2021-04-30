@@ -2,6 +2,8 @@ import { Command, CommandMessage, Infos } from '@typeit/discord';
 import db from '../plugins/firebase';
 import { Markov } from '../plugins/markov';
 import * as axiosTemp from 'axios';
+import { Validate } from '../plugins/tools';
+import { randomInt } from 'crypto';
 const axios = axiosTemp.default;
 
 export abstract class Say {
@@ -85,10 +87,10 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
   })
   private async say(command: CommandMessage): Promise<void> {
     const { tempPerson, tempCount } = command.args;
-    const person: string = this.validateUser(tempPerson)
-      ? this.userStringParser(tempPerson)
-      : this.userStringParser(command.author.id);
-    const count: number = this.checkNumber(tempCount)
+    const person: string = Validate.user(tempPerson)
+      ? Validate.userStringParser(tempPerson)
+      : Validate.userStringParser(command.author.id);
+    const count: number = Validate.checkNumber(tempCount)
       ? parseInt(tempCount + '')
       : 5;
 
@@ -106,7 +108,7 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
         tempMessageHolder.push(r.data().message);
       });
 
-      const messagesToLearn: Array<string> = this.wordsFilter(
+      const messagesToLearn: Array<string> = Markov.wordsFilter(
         tempMessageHolder,
         count
       );
@@ -128,49 +130,64 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
     }
   }
 
-  /**
-   * Trims discord mention's head & tail i.e `<!@...>`
-   * @param user discord mention
-   * @returns parsed by regex
-   */
-  private userStringParser(user: string) {
-    const validate = new RegExp(/([0-9])+/g);
-    return validate.exec(user)[0];
-  }
+  @Command('sex :tempA :tempB')
+  @Infos({
+    command: 'sex',
+    detail: '$sex <@Mention 1> <@Mention 2>',
+    description:
+      '* Make them have sex, and produce a baby\n* With a little chatters',
+  })
+  private async sex(command: CommandMessage) {
+    const { tempA, tempB } = command.args;
+    const A = Validate.userValidateAndParse(tempA);
+    const B = Validate.userValidateAndParse(tempB);
+    const markovA = new Markov();
+    const markovB = new Markov();
 
-  /**
-   * Check if `user` is valid id
-   * @param user
-   * @returns `boolean`
-   */
-  private validateUser(user: string): boolean {
-    const validate = new RegExp(/([0-9])+/g);
-    return user && validate.exec(user)[0] ? true : false;
-  }
-
-  /**
-   * Filters valid sentences to train markov chain
-   * @param arr unfiltered message history
-   * @param count minimum length of the array of message history split by whitespace
-   * @returns array of filtered
-   */
-  private wordsFilter(arr: Array<string>, count: number) {
-    for (let i = count; i > 0; i--) {
-      const newArr: Array<string> = arr.filter((s) => s.split(' ').length >= i);
-      if (newArr.length >= 5) return newArr;
-    }
-  }
-
-  /**
-   * Check if the property can be parsed into number and returns it
-   * @param num unknown
-   * @returns Parsed number if the `num` could be parsed
-   */
-  private checkNumber(num: unknown): boolean {
     try {
-      return typeof num == 'number' ? true : false;
-    } catch (e) {
-      console.error(`[${new Date()}] ${e}`);
+      const dataA = await db
+        .collection('Member')
+        .doc(A)
+        .collection('Messages')
+        .orderBy('createdAt', 'desc')
+        .limit(150)
+        .get();
+      const dataB = await db
+        .collection('Member')
+        .doc(B)
+        .collection('Messages')
+        .orderBy('createdAt', 'desc')
+        .limit(150)
+        .get();
+      const tempMessageHolderA = [];
+      const tempMessageHolderB = [];
+
+      if (!dataA.empty && !dataB.empty) {
+        dataA.forEach((r) => {
+          tempMessageHolderA.push(r.data().message);
+        });
+        dataB.forEach((r) => {
+          tempMessageHolderB.push(r.data().message);
+        });
+      }
+
+      // command.guild.members.cache.get(A).nickname
+
+      if (A && B) {
+        //
+      } else {
+        command.channel.send('You need a pair to produce a baby 😞');
+      }
+    } catch (error) {
+      console.error(`[${new Date()}] ${error}`);
     }
+  }
+
+  static async generateRandomConversation(
+    max: number,
+    A: Record<string, string>
+  ): Promise<string> {
+    // let str = ''
+    // return str
   }
 }

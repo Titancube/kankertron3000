@@ -1,36 +1,32 @@
-import {
-  Client,
-  Command,
-  CommandMessage,
-  Description,
-  Infos,
-} from '@typeit/discord';
+import { Client, Command, CommandMessage, Infos } from '@typeit/discord';
 
 export abstract class Help {
-  @Command('help :mTarget')
+  @Command('help :_targetCommand')
   @Infos({
     command: 'help',
     detail: '`$help <Command>`',
     description: '* Get general info about all or specific command',
   })
-  @Description('Get general info about all commands')
   private async help(command: CommandMessage): Promise<void> {
-    const { mTarget } = command.args;
-    const details = Client.getCommands();
-    const title =
+    const { _targetCommand } = command.args;
+    const commandList = Client.getCommands();
+    const messageTitle =
       '**Commands List**\n\nType `$help <command>` to see description';
     let str = '\n\n';
-    if (!mTarget) {
-      details.forEach((v) => {
-        str += v.infos.command + ' - ' + v.infos.detail + '\n';
+
+    if (!_targetCommand) {
+      commandList.forEach((el) => {
+        str += el.infos.command + ' - ' + el.infos.detail + '\n';
       });
-      command.channel.send(title + str);
+      command.channel.send(messageTitle + str);
     } else {
-      const result = details.filter(
-        (v) => v.infos.command === mTarget.toString()
+      const searchResult = commandList.find(
+        (el) => el.infos.command === _targetCommand.toString()
       );
-      if (result.length > 0) {
-        str = result[0].infos.detail + '\n\n' + result[0].infos.description;
+
+      if (searchResult) {
+        str =
+          searchResult.infos.detail + '\n\n' + searchResult.infos.description;
         command.channel.send(str);
       } else {
         command.channel.send('The command does not exist');

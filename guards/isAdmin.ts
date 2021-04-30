@@ -1,11 +1,11 @@
-import { GuardFunction } from "@typeit/discord";
+import { GuardFunction } from '@typeit/discord';
 
-export const isAdmin: GuardFunction<"message"> = async (
+export const IsAdmin: GuardFunction<'message'> = async (
   [message],
   client,
   next
 ) => {
-  if (message.member.hasPermission("ADMINISTRATOR", { checkAdmin: true })) {
+  if (message.member.hasPermission('ADMINISTRATOR', { checkAdmin: true })) {
     await next();
   }
 };
