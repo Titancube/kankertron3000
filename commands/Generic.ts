@@ -41,7 +41,7 @@ export abstract class Say {
         str += '```diff\n- Server Offline\n```';
       }
       command.channel.send(
-        'http://mcapi.us/server/image?ip=blockgame.invertedsilence.com&theme=dark&title=LoudnessRefuge' +
+        'http://mcapi.us/server/image?ip=blockgame.invertedsilence.com&theme=dark&title=Loudness%20Refuge' +
           '&time=' +
           new Date().getTime()
       );
