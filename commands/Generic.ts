@@ -3,7 +3,7 @@ import db from '../plugins/firebase';
 import { Markov } from '../plugins/markov';
 import * as axiosTemp from 'axios';
 import { Validate } from '../plugins/tools';
-import { randomInt } from 'crypto';
+// import { randomInt } from 'crypto';
 const axios = axiosTemp.default;
 
 export abstract class Say {
@@ -141,8 +141,8 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
     const { tempA, tempB } = command.args;
     const A = Validate.userValidateAndParse(tempA);
     const B = Validate.userValidateAndParse(tempB);
-    const markovA = new Markov();
-    const markovB = new Markov();
+    // const markovA = new Markov();
+    // const markovB = new Markov();
 
     try {
       const dataA = await db
@@ -181,13 +181,5 @@ Donate to Titancube for more features! ➡ https://paypal.me/titancube
     } catch (error) {
       console.error(`[${new Date()}] ${error}`);
     }
-  }
-
-  static async generateRandomConversation(
-    max: number,
-    A: Record<string, string>
-  ): Promise<string> {
-    // let str = ''
-    // return str
   }
 }
