@@ -1,7 +1,7 @@
 export class Validate {
   /**
-   * Check if `id` is valid
-   * Also removes `<!@...> or <@...>`
+   * Check if `id` is valid.
+   * Also trims `<!@...> or <@...>`
    * @param id
    * @returns `boolean`
    */
