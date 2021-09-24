@@ -1,18 +1,14 @@
-import { Command, CommandMessage, Infos } from '@typeit/discord';
-import db from '../plugins/firebase';
+import { Slash, Description } from "@typeit/discord";
+import db from "../plugins/firebase";
 
 export abstract class Penis {
-  @Command('penis')
-  @Infos({
-    command: `penis`,
-    detail: '`$penis`',
-    description: '* You get what you get',
-  })
+  @Slash("penis")
+  @Description("* You get what you get")
   private async penis(command: CommandMessage): Promise<void> {
-    const testicles = '3';
-    const glans = 'D';
-    const stick = '=';
-    const snapshot = db.collection('Member').doc(command.author.id);
+    const testicles = "3";
+    const glans = "D";
+    const stick = "=";
+    const snapshot = db.collection("Member").doc(command.author.id);
     const r = await snapshot.get();
 
     const fate = (): number => {

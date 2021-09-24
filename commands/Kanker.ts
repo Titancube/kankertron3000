@@ -1,49 +1,33 @@
-import { Command, CommandMessage, Guard, Infos } from '@typeit/discord';
-import * as path from 'path';
-import { IsAdmin } from '../guards/IsAdmin';
+import {
+  joinVoiceChannel,
+  VoiceConnectionStatus,
+  AudioPlayerStatus,
+  createAudioPlayer,
+  createAudioResource,
+  NoSubscriberBehavior,
+} from '@discordjs/voice';
+import {
+  Client,
+  Description,
+  Discord,
+  Permission,
+  Slash,
+} from '@typeit/discord';
+import { CommandInteraction } from 'discord.js';
+import { VoiceFunctions } from '../plugins/tools';
 
+@Discord()
 export abstract class Kanker {
-  private static async voiceEmitter(
-    command: CommandMessage,
-    file: string,
-    volume: number
-  ) {
-    const vc = command.member.voice.channel;
-    if (vc) {
-      const r = await vc.join();
-      const dispatcher = r.play(
-        path.join(__dirname, `../assets/audio/${file}`)
-      );
-
-      dispatcher.setVolume(volume);
-
-      dispatcher
-        .on('finish', () => {
-          dispatcher.destroy();
-          command.guild.me.voice.channel.leave();
-        })
-        .on('error', (e) => {
-          console.log(`
-          ${e.name}
-
-          ${e.message}
-
-          ${e.stack}
-          `);
-        });
-    } else {
-      command.channel.send('Join voice channel to execute the function');
-    }
-  }
-
-  @Command('kanker')
-  @Infos({
-    command: 'kanker',
-    detail: '`$kanker`',
-    description: '* kanker',
-  })
-  private async kanker(command: CommandMessage): Promise<void> {
-    const vc = command.member.voice.channel;
+  @Slash('kanker')
+  @Description('Kanker')
+  private async kanker(
+    interaction: CommandInteraction,
+    client: Client
+  ): Promise<void> {
+    // const vc = interaction.member.voice.channel;
+    const guild = client.guilds.cache.get(interaction.guildId);
+    const member = guild.members.cache.get(interaction.member.user.id);
+    const vc = member.voice.channel;
 
     const getRndBias = (
       min: number,
@@ -59,49 +43,72 @@ export abstract class Kanker {
     const theTime = getRndBias(1000, 120000, 2000, 0.75);
 
     if (vc) {
-      const r = await vc.join();
-      const play = async () => {
-        const dispatcher = r.play(
-          path.join(__dirname, '../assets/audio/kanker.wav')
-        );
-        dispatcher.setVolume(0.65);
-        dispatcher
-          .on('finish', () => {
-            dispatcher.destroy();
-            command.member.voice.channel.leave();
-          })
-          .on('error', (e) => {
-            console.log(e);
+      const conn = joinVoiceChannel({
+        guildId: vc.guildId,
+        channelId: vc.id,
+        adapterCreator: vc.guild.voiceAdapterCreator,
+      });
+
+      conn.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
+        console.log(`VC Connected | Channel: ${vc.name}`);
+        const player = createAudioPlayer({
+          behaviors: {
+            noSubscriber: NoSubscriberBehavior.Pause,
+          },
+        });
+        const play = async () => {
+          const r = createAudioResource(`../assets/audio/kanker.wav`);
+          r.volume.setVolume(0.65);
+
+          player.play(r);
+
+          conn.subscribe(player);
+
+          player.on(AudioPlayerStatus.Idle, () => {
+            player.stop();
+            conn.disconnect();
+            conn.destroy();
           });
-      };
-      setTimeout(play, theTime);
+
+          player.on('error', (e) => {
+            console.error(`Error: ${e.message}`);
+            player.stop();
+            conn.disconnect();
+            conn.destroy();
+          });
+        };
+
+        setTimeout(play, theTime);
+      });
     } else {
-      command.channel.send(
-        'Join voice channel to execute this horrifying function'
-      );
+      interaction.channel.send(`Join VC to execute this horrifying function`);
     }
   }
 
   // admin only: instant kanker
-  @Command('tactkank')
-  @Guard(IsAdmin)
-  @Infos({
-    command: 'tactkank',
-    detail: '`$tactkank`',
-    description: '* Kanker but instant, Admin only',
-  })
-  private async tactkank(command: CommandMessage): Promise<void> {
-    Kanker.voiceEmitter(command, 'kanker.wav', 0.65);
+  @Permission('422067493578997760', 'ROLE')
+  @Slash('tactkank')
+  @Description('Kanker but instant, Admin only')
+  private async tactkank(
+    interaction: CommandInteraction,
+    client: Client
+  ): Promise<void> {
+    VoiceFunctions.voiceEmitter(interaction, client, 'kanker.wav', 0.65);
   }
 
   // leaves voice channel
-  @Command('leave')
-  @Infos({
-    command: `leave`,
-    detail: '`$leave`',
-    description: '* leaves voice channel',
-  })
-  private async leave(command: CommandMessage): Promise<void> {
-    command.member.voice.channel ? command.member.voice.channel.leave() : false;
+  @Slash('leave')
+  @Description('Leaves voice channel')
+  private async leave(
+    interaction: CommandInteraction,
+    client: Client
+  ): Promise<void> {
+    // command.member.voice.channel ? command.member.voice.channel.leave() : false;
+  }
+
+  @Slash('test')
+  @Description('Test function')
+  private async test(interaction: CommandInteraction, client: Client) {
+    interaction.channel.send('Test');
   }
 }
