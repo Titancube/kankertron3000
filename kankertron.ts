@@ -1,6 +1,7 @@
 import { Client } from "@typeit/discord";
-import * as dotenv from 'dotenv'
-dotenv.config()
+import dotenv from "dotenv";
+import path from "path";
+dotenv.config({ path: path.join(__dirname, "./.env") });
 
 export class Main {
   private static _client: Client;
@@ -12,12 +13,12 @@ export class Main {
   static start(): void {
     this._client = new Client();
     this._client.login(
-      process.env.CLIENT_TOKEN,
+      process.env.CLIENT_TOKEN!,
       `${__dirname}/discords/*.ts`,
       `${__dirname}/discords/*.js`
     );
 
-    console.log('Gratis Saus');
+    console.log(`[${new Date()}] Gratis Saus`);
   }
 }
 
