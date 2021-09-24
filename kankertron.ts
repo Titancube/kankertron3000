@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Client } from "@typeit/discord";
 import dotenv from "dotenv";
 import path from "path";
