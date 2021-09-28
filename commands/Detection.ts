@@ -1,8 +1,9 @@
-import { ArgsOf, Guard, On } from 'discordx';
+import { ArgsOf, Discord, Guard, On } from 'discordx';
 import { NotBot } from '../guards/NotBot';
 
+@Discord()
 export abstract class Detection {
-  @On('message')
+  @On('messageCreate')
   @Guard(NotBot) // Message author should not be the bot
   private async textWithoutInfo([msg]: ArgsOf<'messageCreate'>): Promise<void> {
     // Check the channel - set to #resources-n-sales / "827736673777090620"

@@ -1,7 +1,8 @@
-import { ArgsOf, Guard, On } from 'discordx';
+import { ArgsOf, Guard, On, Discord } from 'discordx';
 import { NotBot } from '../guards/NotBot';
 import db from '../plugins/firebase';
 
+@Discord()
 export abstract class Remember {
   @On('messageCreate')
   @Guard(NotBot)
