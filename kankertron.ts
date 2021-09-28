@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import 'reflect-metadata';
-import { Intents } from 'discord.js';
-import { Client } from '@typeit/discord';
-import dotenv from 'dotenv';
-import path from 'path';
-dotenv.config({ path: path.join(__dirname, './.env') });
+import { Client } from 'discordx';
+import { Intents, Message } from 'discord.js';
+import * as dotenv from 'dotenv';
+import { Logger } from './plugins/tools';
+dotenv.config({ path: __dirname + '/.env' });
 
-const start = async () => {
-  const _client = new Client({
+async function start() {
+  const client = new Client({
+    prefix: async (message: Message) => {
+      return '$';
+    },
+    classes: [`${__dirname}/commands/*.{js,ts}`],
     intents: [
       Intents.FLAGS.GUILDS,
       Intents.FLAGS.GUILD_MESSAGES,
@@ -23,21 +27,30 @@ const start = async () => {
       Intents.FLAGS.GUILD_INVITES,
       Intents.FLAGS.GUILD_BANS,
     ],
-    slashGuilds: ['421792855506419714'],
-    // classes: [`${__dirname}/commands/*.ts`, `${__dirname}/commands/*.js`],
-    classes: [`${__dirname}/commands/Kanker.ts`],
-    silent: false,
+    botGuilds: [process.env.GUILD_ID!],
+    silent: true,
   });
 
-  _client.once('ready', async () => {
-    await _client.initSlashes();
-  });
+  try {
+    client.on('ready', async () => {
+      Logger.log('Clearing previous slash commands...');
+      await client.clearApplicationCommands(process.env.GUILD_ID);
+      Logger.log('...DONE');
+      Logger.log('Initializing current slash commands...');
+      await client.initApplicationCommands();
+      Logger.log('...DONE');
+      Logger.log('Kankertron is Ready');
+    });
 
-  _client.on('interactionCreate', (interaction) => {
-    _client.executeSlash(interaction);
-  });
+    client.on('interactionCreate', (interaction) => {
+      client.executeInteraction(interaction);
+    });
 
-  await _client.login(process.env.CLIENT_TOKEN!);
-};
+    client.login(process.env.CLIENT_TOKEN);
+  } catch (e) {
+    Logger.error('Error');
+    console.error(e);
+  }
+}
 
 start();
