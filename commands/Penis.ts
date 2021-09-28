@@ -1,14 +1,15 @@
-import { Slash, Description } from "@typeit/discord";
-import db from "../plugins/firebase";
+import { CommandInteraction } from 'discord.js';
+import { Discord, Slash } from 'discordx';
+import db from '../plugins/firebase';
 
+@Discord()
 export abstract class Penis {
-  @Slash("penis")
-  @Description("* You get what you get")
-  private async penis(command: CommandMessage): Promise<void> {
-    const testicles = "3";
-    const glans = "D";
-    const stick = "=";
-    const snapshot = db.collection("Member").doc(command.author.id);
+  @Slash('penis', { description: 'You get what you get' })
+  private async penis(interaction: CommandInteraction): Promise<void> {
+    const testicles = '3';
+    const glans = 'D';
+    const stick = '=';
+    const snapshot = db.collection('Member').doc(interaction.member.user.id);
     const r = await snapshot.get();
 
     const fate = (): number => {
@@ -17,10 +18,10 @@ export abstract class Penis {
 
     const penisConstructor = (n: number): number => {
       if (n < 80 || n + 1 > 500 || n + penisConstructor(fate()) > 500) {
-        command.channel.send(`The god has rolled the dice!`);
+        interaction.reply(`The god has rolled the dice!`);
         return n;
       }
-      command.channel.send(
+      interaction.reply(
         `The god has has rolled the Jackpot and rolling the dice again!`
       );
       return n + penisConstructor(fate());
@@ -30,11 +31,11 @@ export abstract class Penis {
       const penis =
         testicles + stick.repeat(penisConstructor(fate()) / 10) + glans;
       await snapshot.set({ penis: penis }, { merge: true });
-      command.channel.send(penis);
+      interaction.reply(penis);
     };
 
     r.exists && r.data().penis !== undefined
-      ? command.channel.send(r.data().penis)
+      ? interaction.reply(r.data().penis)
       : godHasSpoken();
   }
 }
