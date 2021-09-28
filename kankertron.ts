@@ -33,9 +33,9 @@ async function start() {
 
   try {
     client.on('ready', async () => {
-      Logger.log('Clearing previous slash commands...');
-      await client.clearApplicationCommands(process.env.GUILD_ID);
-      Logger.log('...DONE');
+      // Logger.log('Clearing previous slash commands...');
+      // await client.clearApplicationCommands(process.env.GUILD_ID);
+      // Logger.log('...DONE');
       Logger.log('Initializing current slash commands...');
       await client.initApplicationCommands();
       Logger.log('...DONE');
