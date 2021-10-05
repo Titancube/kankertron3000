@@ -9,6 +9,7 @@ import {
 import { Client, Discord, Permission, Slash } from 'discordx';
 import { CommandInteraction } from 'discord.js';
 import { Logger, VoiceFunctions } from '../plugins/tools';
+import { join } from 'path';
 
 @Discord()
 export abstract class Kanker {
@@ -53,6 +54,9 @@ export abstract class Kanker {
             __dirname + `../assets/audio/kanker.wav`,
             { inlineVolume: true }
           );
+          Logger.log(
+            `Playing Audio : ${join(__dirname, `../assets/audio/kanker.wav`)}`
+          );
           r.volume.setVolume(0.65);
           conn.subscribe(player);
           player.play(r);
@@ -68,6 +72,12 @@ export abstract class Kanker {
             player.stop();
             conn.disconnect();
             conn.destroy();
+          });
+
+          player.on('stateChange', (oldState, newState) => {
+            Logger.log(
+              `AP Status | Status Transition : ${oldState.status} => ${newState.status}`
+            );
           });
         };
 
