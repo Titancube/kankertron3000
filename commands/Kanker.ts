@@ -5,6 +5,7 @@ import {
   createAudioPlayer,
   createAudioResource,
   NoSubscriberBehavior,
+  DiscordGatewayAdapterCreator,
 } from '@discordjs/voice';
 import { Client, Discord, Permission, Slash } from 'discordx';
 import { CommandInteraction } from 'discord.js';
@@ -39,7 +40,8 @@ export abstract class Kanker {
       const conn = joinVoiceChannel({
         guildId: vc.guildId,
         channelId: vc.id,
-        adapterCreator: vc.guild.voiceAdapterCreator,
+        adapterCreator: vc.guild
+          .voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator,
       });
 
       conn.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
