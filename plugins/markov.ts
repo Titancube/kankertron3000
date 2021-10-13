@@ -1,9 +1,8 @@
 // https://medium.com/@alexkrameris/markov-chain-implementation-in-javascript-a698f371d66f
 // My own implementation in typescript of Alex Kramer's original javascript version
-
 export class Markov {
   private state: string[] = [];
-  private markovChain = {};
+  private markovChain: { [index: string]: string[] } = {};
 
   addState(text: Array<string> | string): void {
     if (Array.isArray(text)) {
@@ -45,9 +44,10 @@ export class Markov {
     let result = '';
     for (let i = 0; i < count; i++) {
       result += word + ' ';
-      const newWord = this.markovChain[word][
-        Math.floor(Math.random() * this.markovChain[word].length)
-      ];
+      const newWord =
+        this.markovChain[word][
+          Math.floor(Math.random() * this.markovChain[word].length)
+        ];
       word = newWord;
       if (!word || !this.markovChain)
         word = words[Math.floor(Math.random() * count)];
