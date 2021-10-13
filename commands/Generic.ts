@@ -108,7 +108,7 @@ export abstract class Generic {
 
       markov.addState(messagesToLearn);
       markov.train();
-      interaction.reply(`${user.nickname} says: ${markov.generate(length)}`);
+      interaction.reply(`${user.displayName} says: ${markov.generate(length)}`);
     } else {
       interaction.reply('Invalid user');
     }
