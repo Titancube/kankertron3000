@@ -81,7 +81,6 @@ export abstract class Generic {
     length: number,
     interaction: CommandInteraction
   ): Promise<void> {
-    Logger.log(user.id + '|' + length);
     const tempMessageHolder: string[] = [];
     const getHistory = await db
       .collection('Member')
@@ -109,7 +108,7 @@ export abstract class Generic {
 
       markov.addState(messagesToLearn);
       markov.train();
-      interaction.reply(markov.generate(length));
+      interaction.reply(`${user.nickname} says: ${markov.generate(length)}`);
     } else {
       interaction.reply('Invalid user');
     }
