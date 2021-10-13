@@ -1,6 +1,9 @@
-import { Discord, Slash } from 'discordx';
+import { Discord, Slash, SlashOption } from 'discordx';
 import * as axiosTemp from 'axios';
-import { CommandInteraction } from 'discord.js';
+import { CommandInteraction, GuildMember } from 'discord.js';
+import db from '../plugins/firebase';
+import { Markov } from '../plugins/markov';
+import { Logger } from '../plugins/tools';
 // import { randomInt } from 'crypto';
 const axios = axiosTemp.default;
 
@@ -58,52 +61,57 @@ export abstract class Generic {
     interaction.reply({ content: 'gratis saus', ephemeral: false });
   }
 
-  // TODO - Rewrite the function
-  // imitates target person
-  // @Slash('say', {description: "Speaks randomly generated sentence depends on the mentioned person's chat history"})
-  //   // detail: `\`$say <@Mention> <Count?>\``,
-  // private async say(interaction: CommandInteraction): Promise<void> {
-  //   const { tempPerson, tempCount } = interaction.args;
-  //   const person: string = Validate.user(tempPerson)
-  //     ? Validate.userStringParser(tempPerson)
-  //     : Validate.userStringParser(interaction.author.id);
-  //   const count: number = Validate.checkNumber(tempCount)
-  //     ? parseInt(tempCount + '')
-  //     : 5;
+  // New imitation function
+  @Slash('say', {
+    description:
+      "Speaks randomly generated sentence depends on the mentioned person's chat history",
+  })
+  private async say(
+    @SlashOption('user', {
+      description: 'Target user to imitate',
+      type: 'USER',
+      required: true,
+    })
+    user: GuildMember | undefined,
+    @SlashOption('length', {
+      description: 'How long the output message will be',
+      type: 'INTEGER',
+      required: true,
+    })
+    length: number,
+    interaction: CommandInteraction
+  ): Promise<void> {
+    Logger.log(user.id + '|' + length);
+    const tempMessageHolder: string[] = [];
+    const getHistory = await db
+      .collection('Member')
+      .doc(user.id)
+      .collection('Messages')
+      .orderBy('createdAt', 'desc')
+      .limit(150)
+      .get();
 
-  //   const tempMessageHolder = [];
-  //   const getHistory = await db
-  //     .collection('Member')
-  //     .doc(person)
-  //     .collection('Messages')
-  //     .orderBy('createdAt', 'desc')
-  //     .limit(150)
-  //     .get();
+    if (!getHistory.empty) {
+      getHistory.forEach((r) => {
+        tempMessageHolder.push(r.data().message);
+      });
 
-  //   if (!getHistory.empty) {
-  //     getHistory.forEach((r) => {
-  //       tempMessageHolder.push(r.data().message);
-  //     });
+      const messagesToLearn: string[] = Markov.wordsFilter(
+        tempMessageHolder,
+        length
+      );
 
-  //     const messagesToLearn: Array<string> = Markov.wordsFilter(
-  //       tempMessageHolder,
-  //       count
-  //     );
+      if (messagesToLearn.length < 5) {
+        return interaction.reply('Need more histories to generate the message');
+      }
 
-  //     if (messagesToLearn.length < 5) {
-  //       interaction.channel.send(
-  //         'Need more message histories to generate the message'
-  //       );
-  //       return;
-  //     }
+      const markov = new Markov();
 
-  //     const markov = new Markov();
-
-  //     markov.addState(messagesToLearn);
-  //     markov.train();
-  //     interaction.channel.send(markov.generate(count));
-  //   } else {
-  //     interaction.channel.send('Invalid user');
-  //   }
-  // }
+      markov.addState(messagesToLearn);
+      markov.train();
+      interaction.reply(markov.generate(length));
+    } else {
+      interaction.reply('Invalid user');
+    }
+  }
 }
