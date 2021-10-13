@@ -81,6 +81,16 @@ export abstract class Generic {
     length: number,
     interaction: CommandInteraction
   ): Promise<void> {
+    if (length > 100 || length < 5) {
+      interaction.reply({
+        content:
+          'output message length cannot be bigger than 100 nor smaller than 5',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    Logger.log(`Imitation log : ${user.id} (${user.displayName}) | ${length}`);
     const tempMessageHolder: string[] = [];
     const getHistory = await db
       .collection('Member')

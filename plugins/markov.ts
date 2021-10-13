@@ -39,8 +39,8 @@ export class Markov {
   }
 
   generate(count: number): string {
-    const words = Object.keys(this.markovChain);
-    let word = words[Math.floor(Math.random() * words.length)];
+    const words: string[] = Object.keys(this.markovChain);
+    let word = words[Math.floor(Math.random() * (words.length ?? 10))];
     let result = '';
     for (let i = 0; i < count; i++) {
       result += word + ' ';
