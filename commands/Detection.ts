@@ -1,7 +1,7 @@
 import { ArgsOf, Discord, Guard, On } from 'discordx';
 import { NotBot } from '../guards/NotBot';
 
-@Discord()
+// @Discord() // Temporary disable
 export abstract class Detection {
   @On('messageCreate')
   @Guard(NotBot) // Message author should not be the bot
