@@ -9,7 +9,8 @@ import {
 } from '@discordjs/voice';
 import { Client, Discord, Permission, Slash } from 'discordx';
 import { CommandInteraction } from 'discord.js';
-import { Logger, VoiceFunctions } from '../plugins/tools';
+import { Logger } from '../plugins/tools';
+import { VoiceFunctions } from '../plugins/voice';
 import { join } from 'path';
 
 @Discord()
@@ -70,7 +71,7 @@ export abstract class Kanker {
           });
 
           player.on('error', async (e) => {
-            Logger.error(`Error: ${e.message}`);
+            Logger.log(`Error: ${e.message}`, true);
             player.stop();
             conn.disconnect();
             conn.destroy();
