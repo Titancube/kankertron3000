@@ -4,6 +4,7 @@ import { Client } from 'discordx';
 import { Intents, Message } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { Logger } from './plugins/tools';
+import { format } from 'date-fns';
 dotenv.config({ path: __dirname + '/.env' });
 
 async function start() {
@@ -33,6 +34,16 @@ async function start() {
 
   try {
     client.on('ready', async () => {
+      Logger.writeLog(
+        `\r\n${'-'.repeat(10)} K A N K E R T R O N    3 0 0 0 ${'-'.repeat(
+          10
+        )}`,
+        true
+      );
+      Logger.writeLog(
+        `Booted at ${format(new Date(), 'yyyy-MM-dd HH:mm:ss:SSS')}\r\n`,
+        true
+      );
       Logger.log('Initializing current slash commands...');
       await client.initApplicationCommands();
       Logger.log('...DONE');
