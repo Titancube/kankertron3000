@@ -5,7 +5,7 @@ export const NotBot: GuardFunction<ArgsOf<'messageCreate'>> = async (
   client,
   next
 ) => {
-  if (client.user.id !== message.author.id) {
+  if (!client.user.bot) {
     await next();
   }
 };
