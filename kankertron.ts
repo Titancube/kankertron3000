@@ -34,6 +34,7 @@ async function start() {
 
   try {
     client.on('ready', async () => {
+      console.clear();
       Logger.writeLog(
         `\r\n${'-'.repeat(10)} K A N K E R T R O N    3 0 0 0 ${'-'.repeat(
           10
