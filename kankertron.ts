@@ -45,7 +45,7 @@ async function start() {
 
     client.login(process.env.CLIENT_TOKEN);
   } catch (e) {
-    Logger.error('Error');
+    Logger.log('Exception', true);
     console.error(e);
   }
 }
