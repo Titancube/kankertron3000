@@ -119,7 +119,7 @@ export abstract class Generic {
       markov.addState(messagesToLearn);
       markov.train();
       interaction.reply(
-        `${Validate.filterId(user.displayName)} says: ${markov.generate(
+        `${Validate.filterSnowflake(user.displayName)} says: ${markov.generate(
           length
         )}`
       );
