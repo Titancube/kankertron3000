@@ -1,7 +1,7 @@
 import { ArgsOf, Discord, Guard, On } from 'discordx';
 import { NotBot } from '../guards/NotBot';
 
-@Discord() // Temporary disable
+@Discord()
 export abstract class Detection {
   @On('messageCreate')
   @Guard(NotBot) // Message author should not be the bot
@@ -22,7 +22,7 @@ export abstract class Detection {
         true
       : // Message does not have a link or an attachment. Delete the message and send notification through DM
         (msg.delete(),
-        await msg.author.send(
+        await msg.author.dmChannel.send(
           'Messages on the `#resources-n-sales` should have at least one attachment or link!\nIf this problem keeps occuring please contact **blob(Titancube)** on the server.'
         ));
   }
