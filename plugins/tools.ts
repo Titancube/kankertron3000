@@ -40,7 +40,7 @@ export class Validate {
    * @returns Snowflake as string
    */
   static filterId(str: string): string {
-    if (str.startsWith('<@') && str.endsWith('>')) {
+    if (str.startsWith('<#') || (str.startsWith('<@') && str.endsWith('>'))) {
       const validate = new RegExp(/([0-9]+)/g);
       return validate.exec(str)[0];
     }
