@@ -38,39 +38,50 @@ export abstract class Kanker {
     const theTime = getRndBias(1000, 120000, 2000, 0.75);
 
     if (vc) {
-      const conn = joinVoiceChannel({
-        guildId: vc.guildId,
-        channelId: vc.id,
-        adapterCreator: vc.guild
-          .voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator,
-      });
-
-      conn.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
-        Logger.log(`VC Connected | Channel: ${vc.name}`);
-        const player = createAudioPlayer({
-          behaviors: {
-            noSubscriber: NoSubscriberBehavior.Pause,
-          },
+      interaction.reply({ content: 'Executing Kanker', ephemeral: true });
+      try {
+        const conn = joinVoiceChannel({
+          guildId: vc.guildId,
+          channelId: vc.id,
+          adapterCreator: vc.guild
+            .voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator,
         });
-        const play = async () => {
+
+        conn.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
+          Logger.log(`Executing Kanker`);
+          Logger.log(
+            `Current Kankertime | ${theTime} (${(theTime / 1000).toFixed(
+              2
+            )} sec)`
+          );
+          Logger.log(`VC Connected | Channel: ${vc.name}`);
+
+          const player = createAudioPlayer({
+            behaviors: {
+              noSubscriber: NoSubscriberBehavior.Pause,
+            },
+          });
           const r = createAudioResource(
-            __dirname + `../assets/audio/kanker.wav`,
+            join(__dirname, `../assets/audio/kanker.wav`),
             { inlineVolume: true }
           );
-          Logger.log(
-            `Playing Audio : ${join(__dirname, `../assets/audio/kanker.wav`)}`
-          );
           r.volume.setVolume(0.65);
-          conn.subscribe(player);
-          player.play(r);
 
-          player.on(AudioPlayerStatus.Idle, async () => {
+          setTimeout(() => {
+            conn.subscribe(player);
+            player.play(r);
+            Logger.log(
+              `Playing Audio : ${join(__dirname, `../assets/audio/kanker.wav`)}`
+            );
+          }, theTime);
+
+          player.on(AudioPlayerStatus.Idle, () => {
             player.stop();
             conn.disconnect();
             conn.destroy();
           });
 
-          player.on('error', async (e) => {
+          player.on('error', (e) => {
             Logger.log(`Error: ${e.message}`, true);
             player.stop();
             conn.disconnect();
@@ -82,12 +93,22 @@ export abstract class Kanker {
               `AP Status | Status Transition : ${oldState.status} => ${newState.status}`
             );
           });
-        };
+        });
 
-        setTimeout(play, theTime);
-      });
+        conn.on('stateChange', (oldState, newState) => {
+          Logger.log(
+            `VC Status | State Transition : ${oldState.status} => ${newState.status}`
+          );
+        });
+      } catch (e) {
+        Logger.log('Exception Error', true);
+        console.error(e);
+      }
     } else {
-      interaction.reply(`Join VC to execute this horrifying function`);
+      interaction.reply({
+        content: `Join VC to execute this horrifying function`,
+        ephemeral: true,
+      });
     }
   }
 
@@ -100,8 +121,19 @@ export abstract class Kanker {
     interaction: CommandInteraction,
     client: Client
   ): Promise<void> {
-    interaction.reply({ content: 'Tactical Kank Incoming', ephemeral: true });
-    VoiceFunctions.voiceEmitter(interaction, client, 'kanker.wav', 0.65);
+    Logger.log(`Executing Tactical Kanker`);
+    try {
+      VoiceFunctions.voiceEmitter(
+        interaction,
+        client,
+        'kanker.wav',
+        0.65,
+        'Tactical Kanker Incoming'
+      );
+    } catch (e) {
+      Logger.log('Exception Error', true);
+      console.error(e);
+    }
   }
 
   // @Slash('leave', { description: 'Leaves voice channel' })
