@@ -3,7 +3,7 @@ import * as axiosTemp from 'axios';
 import { CommandInteraction, GuildMember } from 'discord.js';
 import db from '../plugins/firebase';
 import { Markov } from '../plugins/markov';
-import { Logger } from '../plugins/tools';
+import { Logger, Validate } from '../plugins/tools';
 // import { randomInt } from 'crypto';
 const axios = axiosTemp.default;
 
@@ -118,7 +118,11 @@ export abstract class Generic {
 
       markov.addState(messagesToLearn);
       markov.train();
-      interaction.reply(`${user.displayName} says: ${markov.generate(length)}`);
+      interaction.reply(
+        `${Validate.filterId(user.displayName)} says: ${markov.generate(
+          length
+        )}`
+      );
     } else {
       interaction.reply('Invalid user');
     }

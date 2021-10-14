@@ -32,3 +32,17 @@ export class Logger {
     }
   }
 }
+
+export class Validate {
+  /**
+   * Filters discord's snowflake ID in given string
+   * @param str
+   * @returns Snowflake as string
+   */
+  static filterId(str: string): string {
+    if (str.startsWith('<@') && str.endsWith('>')) {
+      const validate = new RegExp(/([0-9]+)/g);
+      return validate.exec(str)[0];
+    }
+  }
+}
